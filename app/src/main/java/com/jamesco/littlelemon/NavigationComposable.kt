@@ -16,17 +16,17 @@ import androidx.navigation.compose.rememberNavController
 fun Navigation(navController: NavHostController){
     val context = LocalContext.current
     val sharedPreferences: SharedPreferences = remember{context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)}
-    val startDestination = if (sharedPreferences.getBoolean("isOnboarded", false))
+    val startDestination = if (sharedPreferences.getBoolean("isLoggedIn", false))
         Home.route else OnBoarding.route
     NavHost(navController = navController, startDestination = startDestination){
             composable(OnBoarding.route){
                 Onboarding(navController)
             }
             composable(Home.route){
-                Home()
+                Home(navController)
             }
             composable(Profile.route){
-                Profile()
+                Profile(navController)
             }
     }
 }

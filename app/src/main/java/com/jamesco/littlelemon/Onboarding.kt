@@ -82,10 +82,10 @@ fun Onboarding(navController: NavHostController){
             if(validateData(firstName, lastName, emailAddress)){
                 //store
                 val editor =sharedPreferences.edit()
-                editor.putBoolean("isOnboarded", true)
                 editor.putString("firstName", firstName)
                 editor.putString("lastName", lastName)
                 editor.putString("email", emailAddress)
+                editor.putBoolean("isLoggedIn", true)
                 editor.apply()
 
                 //navigation
@@ -122,10 +122,11 @@ fun validateData(firstName:String, lastName:String, emailAddress:String):Boolean
 }
 
 @Composable
-fun MyTextField(tag:String,value:String, onValueChange:(String)->Unit){
+fun MyTextField(tag:String,value:String, onValueChange:(String)->Unit, readOnly:Boolean = false){
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(text = tag)
         OutlinedTextField(value = value, onValueChange = onValueChange,
+            readOnly = readOnly,
         modifier = Modifier.fillMaxWidth()
             , singleLine = true,
             shape = RoundedCornerShape(10.dp)
