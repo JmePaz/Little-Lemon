@@ -5,11 +5,12 @@ import android.content.SharedPreferences
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -24,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.jamesco.littlelemon.ui.theme.Primary1
 
 //@Preview(showSystemUi =  true)
@@ -48,12 +50,28 @@ fun Profile( navController: NavHostController){
 
     Column(modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally) {
-        Image(painter =  painterResource(id = R.drawable.logo),
-            "A logo",
-            modifier = Modifier
-                .size(width = 200.dp, 100.dp)
-                .padding(vertical = 16.dp),
-            contentScale = ContentScale.Fit)
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight(0.12f)
+            .background(Color.White),
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = Alignment.CenterVertically){
+            IconButton(onClick = {
+                navController.navigate(Home.route)
+            }, modifier = Modifier.weight(1f)) {
+                Icon(Icons.Default.ArrowBack, "Go back")
+            }
+            Image(painter = painterResource(R.drawable.logo),
+                "Little Lemon Logo",
+                modifier = Modifier
+                    .weight(2f, true)
+                    .requiredHeightIn(min = 100.dp),
+                contentScale = ContentScale.FillWidth)
+            Spacer(modifier = Modifier.weight(1f) )
+
+        }
+
+
         Column(modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(0.8f)
@@ -89,8 +107,8 @@ fun Profile( navController: NavHostController){
     }
 }
 
-//@Preview(showSystemUi =  true)
-//@Composable
-//fun ProfilePreview(){
-//    Profile()
-//}
+@Preview(showSystemUi =  true)
+@Composable
+fun ProfilePreview(){
+    Profile(rememberNavController())
+}

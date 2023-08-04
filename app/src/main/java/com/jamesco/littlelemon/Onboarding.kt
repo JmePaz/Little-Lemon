@@ -93,11 +93,11 @@ fun Onboarding(navController: NavHostController){
 
                 //successful message
                 Toast.makeText(context, "Registration successful.",
-                    Toast.LENGTH_LONG).show()
+                    Toast.LENGTH_SHORT).show()
             }
             else{
                 Toast.makeText(context, "Registration unsuccessful. Please enter all data.",
-                Toast.LENGTH_LONG).show()
+                Toast.LENGTH_SHORT).show()
             }
         },
             colors = ButtonDefaults.buttonColors(
