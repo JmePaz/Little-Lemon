@@ -1,20 +1,22 @@
 package com.jamesco.littlelemon
 
+import android.content.Context
+import android.content.SharedPreferences
+import android.text.BoringLayout
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import  androidx.compose.runtime.getValue
-import  androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -22,10 +24,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.jamesco.littlelemon.ui.theme.Primary1
 
 @Composable
-fun Onboarding(){
+fun Onboarding(navController: NavHostController){
 
     var firstName  by rememberSaveable {
         mutableStateOf("")
@@ -38,6 +41,9 @@ fun Onboarding(){
     var emailAddress by rememberSaveable {
         mutableStateOf("")
     }
+
+    val context = LocalContext.current
+    val sharedPreferences: SharedPreferences = remember{context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)}
 
     Column(modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally) {
@@ -71,7 +77,29 @@ fun Onboarding(){
             MyTextField("Email",value = emailAddress, onValueChange = { emailAddress = it})
         }
 
-        Button(onClick = { /*TODO*/ },
+
+        Button(onClick = {
+            if(validateData(firstName, lastName, emailAddress)){
+                //store
+                val editor =sharedPreferences.edit()
+                editor.putBoolean("isOnboarded", true)
+                editor.putString("firstName", firstName)
+                editor.putString("lastName", lastName)
+                editor.putString("email", emailAddress)
+                editor.apply()
+
+                //navigation
+                navController.navigate(Home.route)
+
+                //successful message
+                Toast.makeText(context, "Registration successful.",
+                    Toast.LENGTH_LONG).show()
+            }
+            else{
+                Toast.makeText(context, "Registration unsuccessful. Please enter all data.",
+                Toast.LENGTH_LONG).show()
+            }
+        },
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = Primary1,
                 contentColor =  Color.Black
@@ -82,6 +110,15 @@ fun Onboarding(){
             Text(text = "Register")
         }
     }
+}
+fun validateData(firstName:String, lastName:String, emailAddress:String):Boolean{
+    if(firstName.isBlank() || lastName.isBlank() || emailAddress.isBlank()){
+        return false
+    }
+
+
+    return  true
+
 }
 
 @Composable
@@ -97,9 +134,11 @@ fun MyTextField(tag:String,value:String, onValueChange:(String)->Unit){
     }
 }
 
+
+
 @Preview(showSystemUi = true)
 @Composable
 fun OnboardPreview(){
 
-    Onboarding()
+    //Onboarding()
 }
