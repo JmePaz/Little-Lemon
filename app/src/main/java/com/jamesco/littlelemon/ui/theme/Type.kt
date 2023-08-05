@@ -63,7 +63,7 @@ val karlaTypography = Typography(
         fontWeight = FontWeight.Normal
     ),
     body2 = TextStyle(
-        Color.Black,
+        Color.White,
         fontSize = 16.sp,
         fontWeight = FontWeight.Medium
     )
@@ -73,12 +73,12 @@ val karlaTypography = Typography(
 val marzakiTypography = Typography(
     markaziTextFamily,
     h1 = TextStyle(
-        Color.Black,
+        Primary2,
         fontSize = 64.sp,
         fontWeight = FontWeight.Normal
     ),
     subtitle1 = TextStyle(
-        Color.Black,
+        Color.White,
         fontSize = 32.sp,
         fontWeight = FontWeight.Normal
     )
