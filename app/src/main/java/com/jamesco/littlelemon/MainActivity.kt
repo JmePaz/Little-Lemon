@@ -1,6 +1,7 @@
 package com.jamesco.littlelemon
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,12 +11,36 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
 import com.jamesco.littlelemon.ui.theme.LittleLemonTheme
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.*
+import io.ktor.client.call.*
+import io.ktor.client.engine.android.*
+import io.ktor.client.request.*
+import io.ktor.http.*
+import io.ktor.serialization.kotlinx.json.*
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
+    private val client: HttpClient = HttpClient(Android){
+        install(ContentNegotiation){
+            json(contentType =  ContentType("text","plain"))
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        lifecycleScope.launch{
+            val menuNetwork = getMenuData()
+
+            for ( item in menuNetwork.menu){
+                Log.d("Data: ",item.toString())
+            }
+        }
+
         setContent {
             LittleLemonTheme {
                 // A surface container using the 'background' color from the theme
@@ -27,6 +52,11 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    private suspend fun getMenuData(): MenuNetwork {
+        return client.get("https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/menu.json")
+             .body<MenuNetwork>()
     }
 }
 
