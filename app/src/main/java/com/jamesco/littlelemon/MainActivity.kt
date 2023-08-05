@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
+import androidx.room.Room
 import com.jamesco.littlelemon.ui.theme.LittleLemonTheme
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.*
@@ -21,7 +22,10 @@ import io.ktor.client.engine.android.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.util.Dictionary
 
 class MainActivity : ComponentActivity() {
     private val client: HttpClient = HttpClient(Android){
@@ -29,16 +33,56 @@ class MainActivity : ComponentActivity() {
             json(contentType =  ContentType("text","plain"))
         }
     }
+    private val db by lazy {
+        Room.databaseBuilder(
+            this,
+            AppDatabase::class.java, "Little-lemon-db"
+        ).build()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
 
+
         lifecycleScope.launch{
+            //read from network
             val menuNetwork = getMenuData()
 
-            for ( item in menuNetwork.menu){
-                Log.d("Data: ",item.toString())
+            withContext(IO) {
+                //database
+                val menuDao = db.menuDao()
+
+                //read
+                val menuItems = menuDao.getMenuItems()
+                val uniqueItems = mutableMapOf<Int, MenuItem>()
+                for (item in menuItems) {
+                    uniqueItems[item.id] = item
+                }
+
+
+                //write
+                for (menuItemNetwork in menuNetwork.menu) {
+                    val menuItem = menuItemNetwork.toMenuItem()
+                    if(!uniqueItems.containsKey(menuItem.id)){
+                        menuDao.insertMenuItem(menuItem)
+
+                        Log.d("Saved: ", "Menu Item #${menuItem.id}")
+                    }
+                    else if (menuItem != uniqueItems[menuItem.id]){
+                        menuDao.updateMenuItem(menuItem)
+                        Log.d("Updated: ", "Menu Item #${menuItem.id}")
+                    }
+                    else{
+                        Log.d("ALready saved:","Menu Item #${menuItem.id}")
+                    }
+
+                }
+
+
+
             }
+
         }
 
         setContent {
