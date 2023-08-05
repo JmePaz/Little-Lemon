@@ -56,7 +56,7 @@ fun Home(navController: NavHostController){
         Surface(color = Primary1,
         modifier = Modifier
             .fillMaxWidth()
-            .weight(2.2f)
+            .weight(2.3f)
             ) {
             Column(modifier = Modifier
                 .fillMaxSize()
@@ -72,7 +72,7 @@ fun Home(navController: NavHostController){
                         Text("Chicago", style = marzakiTypography.subtitle1)
                         Text("We are a family owned Mediterranean restaurant, focused on traditional recipes served with a modern twist."
                         , style = karlaTypography.body2,
-                        fontSize = 15.sp, lineHeight = 20.sp)
+                        fontSize = 15.sp, lineHeight = 23.sp)
 
                     }
                     Image(painterResource(id = R.drawable.hero_img),"A hero Image",
