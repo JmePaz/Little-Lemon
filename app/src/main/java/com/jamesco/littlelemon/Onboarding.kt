@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.jamesco.littlelemon.ui.theme.Primary1
+import com.jamesco.littlelemon.ui.theme.Primary2
 
 @Composable
 fun Onboarding(navController: NavHostController){
@@ -101,7 +102,7 @@ fun Onboarding(navController: NavHostController){
             }
         },
             colors = ButtonDefaults.buttonColors(
-                backgroundColor = Primary1,
+                backgroundColor = Primary2,
                 contentColor =  Color.Black
             ), border = BorderStroke(1.dp, color = Color(0xFFFBDABB)),
             modifier = Modifier
