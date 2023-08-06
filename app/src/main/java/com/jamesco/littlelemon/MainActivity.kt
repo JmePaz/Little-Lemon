@@ -9,8 +9,13 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
@@ -33,12 +38,15 @@ class MainActivity : ComponentActivity() {
             json(contentType =  ContentType("text","plain"))
         }
     }
-    private val db by lazy {
+    val db by lazy {
         Room.databaseBuilder(
             this,
             AppDatabase::class.java, "Little-lemon-db"
         ).build()
     }
+
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -76,9 +84,7 @@ class MainActivity : ComponentActivity() {
                     else{
                         Log.d("ALready saved:","Menu Item #${menuItem.id}")
                     }
-
                 }
-
 
 
             }
@@ -87,11 +93,13 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             LittleLemonTheme {
+
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
+
                     Navigation(navController = rememberNavController())
                 }
             }

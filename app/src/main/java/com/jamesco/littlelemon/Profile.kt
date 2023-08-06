@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.jamesco.littlelemon.ui.theme.Primary1
+import com.jamesco.littlelemon.ui.theme.Primary2
 
 //@Preview(showSystemUi =  true)
 
@@ -96,7 +97,7 @@ fun Profile( navController: NavHostController){
             navController.navigate(OnBoarding.route)
         },
             colors = ButtonDefaults.buttonColors(
-                backgroundColor = Primary1,
+                backgroundColor = Primary2,
                 contentColor =  Color.Black
             ), border = BorderStroke(1.dp, color = Color(0xFFFBDABB)),
             modifier = Modifier

@@ -65,7 +65,7 @@ val karlaTypography = Typography(
     body2 = TextStyle(
         Color.White,
         fontSize = 16.sp,
-        fontWeight = FontWeight.Medium
+        fontWeight = FontWeight.Bold
     )
 
 )

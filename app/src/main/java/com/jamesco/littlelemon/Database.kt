@@ -1,5 +1,6 @@
 package com.jamesco.littlelemon
 
+import androidx.lifecycle.LiveData
 import androidx.room.ColumnInfo
 import androidx.room.Dao
 import androidx.room.Database
@@ -25,6 +26,9 @@ data class MenuItem(
 interface MenuDao{
     @Query("SELECT * FROM MenuItem")
     fun getMenuItems(): List<MenuItem>
+
+    @Query("SELECT * FROM MenuItem")
+    fun getLiveMenuItems(): LiveData<List<MenuItem>>
 
     @Query("SELECT * FROM MenuItem WHERE id IN (:itemId)")
     fun getMenuItemById(itemId: Int): MenuItem
