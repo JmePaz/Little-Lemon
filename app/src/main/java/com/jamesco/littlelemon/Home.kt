@@ -1,5 +1,6 @@
 package com.jamesco.littlelemon
 
+import android.view.Menu
 import android.widget.Space
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -24,6 +25,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.LiveData
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
@@ -46,6 +48,15 @@ fun Home(navController: NavHostController){
     }
 
     val menuItemList by db.menuDao().getLiveMenuItems().observeAsState(listOf())
+
+    var searchPhrase by remember{
+        mutableStateOf("")
+    }
+
+    var filterList by remember {
+        mutableStateOf(menuItemList)
+    }
+
 
     Column(modifier = Modifier.fillMaxSize()) {
         Row(modifier = Modifier
@@ -104,7 +115,17 @@ fun Home(navController: NavHostController){
                     contentScale = ContentScale.Crop)
 
                 }
-                OutlinedTextField(value = "", onValueChange ={},
+                OutlinedTextField(value = searchPhrase,
+                    onValueChange = {
+                        searchPhrase = it
+                       if(searchPhrase.trim()!="") {
+                           filterList = menuItemList.filter { it.title
+                               .lowercase().contains(searchPhrase.lowercase()) }
+                       }
+                        else{
+                            filterList = listOf()
+                       }
+                    },
                 leadingIcon = {Icon(Icons.Default.Search,"Search Icon")},
                 modifier = Modifier
                     .fillMaxWidth()
@@ -151,7 +172,7 @@ fun Home(navController: NavHostController){
         }
         LazyColumn(modifier = Modifier.weight(3f,fill=true) ){
             items(
-                items = menuItemList,
+                items = if(filterList.isEmpty() ) menuItemList else filterList,
                 itemContent = {
                     menuItemCard(menuItem = it)
                 }
@@ -171,6 +192,8 @@ fun CategoryButton(category:String, onClick: ()->Unit){
         style = karlaTypography.body2)
     }
 }
+
+
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun menuItemCard(menuItem: MenuItem){
