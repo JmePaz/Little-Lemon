@@ -47,15 +47,19 @@ fun Home(navController: NavHostController){
         ).build()
     }
 
-    val menuItemList by db.menuDao().getLiveMenuItems().observeAsState(listOf())
+    var filterList by remember {
+        mutableStateOf(listOf<MenuItem>())
+    }
+
+
+    val menuItemList by db.menuDao().getLiveMenuItems().observeAsState(listOf()).also {
+        filterList = it.value
+    }
 
     var searchPhrase by remember{
         mutableStateOf("")
     }
 
-    var filterList by remember {
-        mutableStateOf(menuItemList)
-    }
 
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -120,7 +124,7 @@ fun Home(navController: NavHostController){
                         searchPhrase = it
                        if(searchPhrase.trim()!="") {
                            filterList = menuItemList.filter { it.title
-                               .lowercase().contains(searchPhrase.lowercase()) }
+                               .contains(searchPhrase, ignoreCase = true) }
                        }
                         else{
                             filterList = listOf()
@@ -155,16 +159,46 @@ fun Home(navController: NavHostController){
                 .weight(0.8f),
             horizontalArrangement = Arrangement.SpaceAround) {
                 CategoryButton(category = "Starters") {
-
+                    if(searchPhrase.trim()==""){
+                        filterList = menuItemList.filter { it.category.equals("Starters", ignoreCase = true) }
+                    }
+                    else{
+                        filterList = filterList.filter { it.category.equals("Starters", ignoreCase = true) }
+                    }
                 }
                 CategoryButton(category = "Main") {
-
+                    if(searchPhrase.trim()==""){
+                        filterList = menuItemList.filter { it.category.equals("Mains", ignoreCase = true) }
+                    }
+                    else{
+                        filterList = filterList.filter { it.category.equals("Mains", ignoreCase = true) }
+                    }
                 }
                 CategoryButton(category = "Desserts") {
-
+                    if(searchPhrase.trim()==""){
+                        filterList = menuItemList.filter { it.category.equals("Desserts", ignoreCase = true) }
+                    }
+                    else{
+                        filterList = filterList.filter { it.category.equals("Desserts", ignoreCase = true) }
+                    }
                 }
                 CategoryButton(category = "Sides") {
-
+                    if(searchPhrase.trim()=="") {
+                        filterList = menuItemList.filter {
+                            it.category.equals(
+                                "Sides",
+                                ignoreCase = true
+                            )
+                        }
+                    }
+                    else{
+                        filterList = filterList.filter {
+                            it.category.equals(
+                                "Sides",
+                                ignoreCase = true
+                            )
+                        }
+                    }
                 }
             }
             Spacer(modifier = Modifier.weight(0.2f))
@@ -172,7 +206,7 @@ fun Home(navController: NavHostController){
         }
         LazyColumn(modifier = Modifier.weight(3f,fill=true) ){
             items(
-                items = if(filterList.isEmpty() ) menuItemList else filterList,
+                items = filterList,
                 itemContent = {
                     menuItemCard(menuItem = it)
                 }
